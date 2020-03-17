@@ -5,10 +5,17 @@ import React from 'react'
 function UsernameForm({onSubmitUsername}) {
   // 🐨 add some state (with React.useState) for the error.
   // 💰 const [error, setError] = React.useState(null)
+  const [error, setError] = React.useState(null)
 
   function handleSubmit(event) {
     event.preventDefault()
     onSubmitUsername(event.target.elements.usernameInput.value)
+  }
+
+  const handleChange = e => {
+    const {value} = e.target
+    const isLowerCase = value === value.toLowerCase()
+    setError(isLowerCase? null : 'Username must be lower case')
   }
 
   // 🐨 create a `handleChange` function that accepts the change `event` and
@@ -29,12 +36,12 @@ function UsernameForm({onSubmitUsername}) {
         <input
           id="usernameInput"
           type="text"
+          onChange = {handleChange}
           // 🐨 add your onChange handler here
         />
       </div>
-      {/* 🐨 if there's an error, then render it in a div here */}
-      {/* 🐨 add a disabled prop to this button that's set to true if there's an error */}
-      <button type="submit">Submit</button>
+      <div style = {{color: 'red'}}>{error}</div>
+      <button disabled = {Boolean(error)} type="submit">Submit</button>
     </form>
   )
 }

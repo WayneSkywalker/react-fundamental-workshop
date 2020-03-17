@@ -8,11 +8,32 @@ import fetchPokemon from '../fetch-pokemon'
 function PokemonInfo({pokemonName}) {
   // 🐨 Have state for the pokemon (null), the error state (null), and the
   // loading state (false).
+  const [pokemon, setPokemon] = React.useState(null)
+  const [error, setError] = React.useState(null)
+  const [loading, setLoading] = React.useState(false)
 
   // 🐨 use React.useEffect where the callback should be called whenever the
   // pokemon name changes.
   // 💰 DON'T FORGET THE DEPENDENCIES ARRAY!
   // 💰 if the pokemonName is falsy (an empty string) then don't bother making the request (exit early).
+  React.useEffect(() => {
+    if(!pokemonName) return
+    setLoading(true)
+    setError(null)
+    setPokemon(null)
+    fetchPokemon(pokemonName).then(
+      pokemon => {
+        setLoading(false)
+        setError(null)
+        setPokemon(pokemon)
+      },
+      error => {
+        setLoading(false)
+        setError(error)
+        setPokemon(null)
+      }
+    )
+  }, [pokemonName])
   // 🐨 before calling `fetchPokemon`, make sure to update the loading state
   // 💰 Use the `fetchPokemon` function to fetch a pokemon by its name:
   //   fetchPokemon('Pikachu').then(
@@ -31,13 +52,7 @@ function PokemonInfo({pokemonName}) {
         padding: 10,
       }}
     >
-      {/*
-        🐨 Render the appropriate content based on the state:
-            1. loading: '...'
-            2. error: 'ERROR!'
-            3. pokemon: the JSON.stringified pokemon in a <pre></pre>
-      */}
-      TODO
+      { loading ? ("...") : error ? ("ERROR!") : pokemonName ? (<pre>{JSON.stringify(pokemon || "unknown", null, 2)}</pre>) : "submit a pokemon"}
     </div>
   )
 }
